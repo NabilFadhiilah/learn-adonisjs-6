@@ -7,14 +7,18 @@
 |
 */
 
+import app from '@adonisjs/core/services/app'
 import router from '@adonisjs/core/services/router'
+import fs from 'node:fs/promises'
 
 router.on('/').render('pages/home').as('home')
 
 // linking route
-router.get('/movies/my-awsome-movie', async (ctx) => {
+router.get('/movies/:slug', async (ctx) => {
   // ctx.view.share({movie:'my awsome movie'})
-  return ctx.view.render('pages/movies',{movie:'another my awsome movie'})
+  const url = app.makeURL(`resources/movies/${ctx.params.slug}.html`)
+  const movie = await fs.readFile(url, 'utf8')
+  return ctx.view.render('pages/movies/show',{movie})
 }).as('movies.show')
 
 //normal route

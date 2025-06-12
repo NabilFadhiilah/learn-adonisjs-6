@@ -77,9 +77,10 @@
       {{-- Header --}}
       <nav>
         <a href="{{ route('home') }}">home</a>
-        <a href="{{ route('movies.show') }}">movies</a>
+        <a href="{{ route('movies.show', { slug:'my-awsome-movies'}) }}">My Awsome Movie</a>
+        <a href="{{ route('movies.show', { slug:'another-my-awsome-movies'}) }}">Another My Awsome Movie</a>
       </nav>
-      {{ movie }}
+      {{{ movie }}}
       <div class="grow pb-4 bg-gradient-to-b from-sand-1 to-sand-2 flex justify-center items-center">
         <a href="https://adonisjs.com" target="_blank" class="isolate">
           <svg class="w-16 h-16 fill-primary" viewBox="0 0 33 33">
