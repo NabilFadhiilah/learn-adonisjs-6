@@ -6,6 +6,12 @@
   <title>Document</title>
 </head>
 <body>
+  <nav>
+    <a href="{{ route('home') }}">home</a>
+    <a href="{{ route('movies.show', { slug:'my-awsome-movies'}) }}">My Awsome Movie</a>
+    <a href="{{ route('movies.show', { slug:'another-my-awsome-movies'}) }}">Another My Awsome Movie</a>
+  </nav>
+  <h1 class="text-red-500">Its work</h1>
   <h1>Another My Awsome Movies</h1>
   <p>Nulla aute est mollit exercitation aliqua. Esse officia in aliqua culpa tempor elit. Pariatur ullamco cupidatat minim minim pariatur duis mollit tempor esse ut voluptate. Incididunt magna aliqua et veniam Lorem minim. Ipsum commodo sit deserunt veniam ipsum. Reprehenderit aliqua est aute excepteur deserunt sit labore Lorem esse voluptate labore voluptate consectetur nostrud.</p>
 </body>
