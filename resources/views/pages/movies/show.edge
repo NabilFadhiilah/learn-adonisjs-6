@@ -13,6 +13,7 @@
       <a href="{{ route('movies.show', { slug:'my-awsome-movies'}) }}">My Awsome Movie</a>
       <a href="{{ route('movies.show', { slug:'another-my-awsome-movies'}) }}">Another My Awsome Movie</a>
     </nav>
+    <h1>{{md.frontmatter.title}}</h1>
     {{{ movie }}}
     {{-- {{ inspect(movie)}} --}}
   </div>
