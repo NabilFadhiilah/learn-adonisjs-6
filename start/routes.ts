@@ -14,22 +14,18 @@ import fs from 'node:fs/promises'
 import { MarkdownFile } from "@dimerapp/markdown";
 import { toHtml } from "@dimerapp/markdown/utils";
 import { inspect } from 'node:util';
+import { MovieService } from '#services/movie_service';
 
 router.get('/', async (ctx)=>{
-  const url = app.makeURL('resources/movies')
-  const files = await fs.readdir(url)
+  const slugs = await MovieService.getSlugs()
   const movies: Record<string, any>[]= []
 
-  for(const filename of files){
-    const movieUrl = app.makeURL(`resources/movies/${filename}`)
-    const file = await fs.readFile(movieUrl, 'utf8')
-    const md = new MarkdownFile(file)
-    await md.process()
+  for(const slug of slugs){
+    const md = await MovieService.read(slug)
     movies.push({
       title: md.frontmatter.title,
       summary: md.frontmatter.summary,
-      slug: filename.replace('.md','')
-
+      slug,
     })
   }
 
@@ -38,23 +34,9 @@ router.get('/', async (ctx)=>{
 
 // linking route
 router.get('/movies/:slug', async (ctx) => {
-  // ctx.view.share({movie:'my awsome movie'})
-  const url = app.makeURL(`resources/movies/${ctx.params.slug}.md`)
-
-  try {
-    const file = await fs.readFile(url, 'utf8')
-    const md = new MarkdownFile(file)
-    await md.process()
+    const md = await MovieService.read(ctx.params.slug)
     const movie = toHtml(md).contents
     ctx.view.share({movie,md})
-  } catch (error) {
-    throw new Exception(`could not find the movie ${ctx.params.slug}`,
-      {
-        code: 'E_NOT_FOUND',
-        status: 404
-      }
-    )
-  }
   return ctx.view.render('pages/movies/show')
 }).as('movies.show').where('slug',router.matchers.slug( ))
 
