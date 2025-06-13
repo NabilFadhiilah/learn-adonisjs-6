@@ -8,14 +8,15 @@
 </head>
 <body>
   <div class="max-w-3xl mx-auto mt-6">
-    <nav>
-      <a href="{{ route('home') }}">home</a>
-      <a href="{{ route('movies.show', { slug:'my-awsome-movies'}) }}">My Awsome Movie</a>
-      <a href="{{ route('movies.show', { slug:'another-my-awsome-movies'}) }}">Another My Awsome Movie</a>
-    </nav>
+    @include('partials/navbar')
     <h1>{{movie.title}}</h1>
-    {{{ movie.abstract }}}
-    {{-- {{ inspect(movie)}} --}}
+    @if(movie.abstract)
+      <div class="my-8 bg-slate-100 rounded-xl p-8">
+        {{{ movie.abstract }}}
+      </div>
+    @else
+      No abstract
+    @endif
   </div>
 </body>
 </html>

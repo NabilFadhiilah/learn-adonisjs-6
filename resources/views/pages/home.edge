@@ -8,18 +8,17 @@
 </head>
 <body>
   <div class="max-w-3xl mx-auto mt-6">
-    <nav>
-      <a href="{{ route('home') }}">home</a>
-      <a href="{{ route('movies.show', { slug:'my-awsome-movies'}) }}">My Awsome Movie</a>
-      <a href="{{ route('movies.show', { slug:'another-my-awsome-movies'}) }}">Another My Awsome Movie</a>
-    </nav>
+    @include('partials/navbar')
     <h1>It works</h1>
-    <ul>
+    <ul class="flex flex-col gap-4">
       @each(movie in movies)
         <li>
-          <a href="{{ route('movies.show', {slug: movie.slug})}}">
+          <a href="{{ route('movies.show', {slug: movie.slug})}}" class="font-bold">
             {{ movie.title }}
           </a>
+          <p class="text-slate-600">
+            {{ truncate(movie.summary, 50, {completeWords: true}) }}
+          </p>
         </li>
       @end
     </ul>
