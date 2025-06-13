@@ -11,8 +11,19 @@
     @include('partials/navbar')
     <h1>It works</h1>
     <ul class="flex flex-col gap-4">
-      @each(movie in movies)
-        <li>
+      @each((movie, index) in movies)
+        @let (isFirst = index === 0)
+        <li {{
+          html.attrs({
+            id: movie.slug
+            class:[
+                 'p-4 border',
+                 {
+                  'border-blue-500' : isFirst
+                 },
+              ]
+            })
+        }}>
           <a href="{{ route('movies.show', {slug: movie.slug})}}" class="font-bold">
             {{ movie.title }}
           </a>
