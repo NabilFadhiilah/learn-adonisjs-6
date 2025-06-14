@@ -1,8 +1,12 @@
+@let(movies = await Movie.all())
+
 @layout()
 @slot('meta')
   <meta name="description" content="our movie list"/>
 @end
   <h1>It works</h1>
+
+  {{-- {{inspect({stateExample, shareExample, globalExample})}} --}}
 
   <div class="flex flex-wrap -mx-6">
     @each((movie) in movies)
