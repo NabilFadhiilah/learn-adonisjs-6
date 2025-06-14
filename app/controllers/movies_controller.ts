@@ -3,10 +3,8 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class MoviesController {
   async index({ view }: HttpContext) {
-    // const movies = await Movie.all()
-    // view.share({ shareExample: 'Share Info' })
-    // return view.render('pages/home', { movies, stateExample: 'State Example' })
-    return view.render('pages/home')
+    const movies = await Movie.all()
+    return view.render('pages/home', { movies, stateExample: 'State Example' })
   }
 
   async show({ view, params }: HttpContext) {
