@@ -17,7 +17,8 @@
     <form action="{{ route('redis.flush', {}, { qs: {_method: 'DELETE'} }) }}" method="post">
       {{ csrfField() }}
       @button({ type:'sumbit', class: 'rounded-b-none' })
-      Flush Redis DB
+        @svg('ph:trash-fill', { class: 'mr-2' })
+        Flush Redis DB
       @end
     </form>
   </div>
