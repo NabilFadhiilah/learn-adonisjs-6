@@ -35,6 +35,7 @@ export default class extends BaseSeeder {
     })
     .createMany(movies.length)
 
+    await MovieFactory.createMany(3)
     await MovieFactory.apply('released').createMany(2)
     await MovieFactory.apply('releasingSoon').createMany(2)
     await MovieFactory.apply('postProduction').createMany(2)
