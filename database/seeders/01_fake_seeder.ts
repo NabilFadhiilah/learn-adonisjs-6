@@ -22,6 +22,7 @@ export default class extends BaseSeeder {
     await MovieFactory.tap((row,{faker}) => {
       const movie = movies[i]
       const released = DateTime.now().set({ year: movie.releaseYear})
+      row.statusId = MovieStatuses.RELEASED
       row.title = movie.title
       row.releasedAt = DateTime.fromJSDate(
           faker.date.between({
