@@ -4,6 +4,8 @@ import Movie from './movie.js'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 
 export default class Cineast extends BaseModel {
+  serializeExtras = true
+  
   @column({ isPrimary: true })
   declare id: number
 

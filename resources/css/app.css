@@ -16,3 +16,11 @@ body {
 h1{
   @apply text-3xl font-bold mb-3 mt-6
 }
+
+nav {
+  @apply flex gap-2 pb-2 border-b border-slate-100;
+}
+
+nav a {
+  @apply px-2 py-1 rounded hover:bg-slate-100 duration-300;
+}
