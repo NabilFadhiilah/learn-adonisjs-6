@@ -44,7 +44,7 @@ export default class Cineast extends BaseModel {
   declare crewMovies: ManyToMany<typeof Movie>
 
   @manyToMany(()=>Movie,{
-    pivotTable:'crew_movies',
+    pivotTable:'cast_movies',
     pivotTimestamps: true,
     pivotColumns:['character_name','sort_order']
   })
