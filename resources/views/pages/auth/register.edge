@@ -7,29 +7,22 @@
       <form method="POST" action="{{ route('auth.register.store') }}" class="flex flex-col gap-4">
         {{ csrfField() }}
 
-        <label class="flex flex-col">
-          <span class="text-xs font-bold">Full Name</span>
-          <input type="text" name="fullName" value="{{ old('fullName')||'' }}"/>
-          @inputError('fullName')
-            <p class="text-sm text-red-500">{{$messages.join(', ')}}</p>
-          @end
-        </label>
+        @!form.input({
+          label: 'Full Name',
+          name: 'fullName'
+        })
 
-        <label class="flex flex-col">
-          <span class="text-xs font-bold">Email</span>
-          <input type="email" name="email" value="{{ old('email')||'' }} />
-          @if(flashMessages.has('errors.email'))
-            <p class="text-sm text-red-500">{{flashMessages.get('errors.email').join(', ')}}</p>
-          @end
-        </label>
+        @!form.input({
+          label: 'Email',
+          name: 'email',
+          type: 'email'
+        })
 
-        <label class="flex flex-col">
-          <span class="text-xs font-bold">Password</span>
-          <input type="password" name="password" />
-          @inputError('password')
-            <p class="text-sm text-red-500">{{$messages.join(', ')}}</p>
-          @end
-        </label>
+        @!form.input({
+          label: 'Password',
+          name: 'password',
+          type: 'password'
+        })
 
         @button({ type: 'submit' })
           Register
