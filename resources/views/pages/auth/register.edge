@@ -10,16 +10,25 @@
         <label class="flex flex-col">
           <span class="text-xs font-bold">Full Name</span>
           <input type="text" name="fullName" />
+          @inputError('fullName')
+            <p class="text-sm text-red-500">{{$messages.join(', ')}}</p>
+          @end
         </label>
 
         <label class="flex flex-col">
           <span class="text-xs font-bold">Email</span>
           <input type="email" name="email" />
+          @if(flashMessages.has('errors.email'))
+            <p class="text-sm text-red-500">{{flashMessages.get('errors.email').join(', ')}}</p>
+          @end
         </label>
 
         <label class="flex flex-col">
           <span class="text-xs font-bold">Password</span>
           <input type="password" name="password" />
+          @inputError('password')
+            <p class="text-sm text-red-500">{{$messages.join(', ')}}</p>
+          @end
         </label>
 
         @button({ type: 'submit' })
