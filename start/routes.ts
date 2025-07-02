@@ -12,6 +12,8 @@ import MoviesController from '#controllers/movies_controller';
 import RedisController from '#controllers/redis_controller';
 import DirectorsController from '#controllers/directors_controller';
 import WritersController from '#controllers/writers_controller';
+import RegisterController from '#controllers/auth/register_controller';
+
 
 router.get('/', [MoviesController,'index']).as('home')
 router
@@ -28,3 +30,10 @@ router.get('/writers/:id', [WritersController, 'show']).as('writers.show')
 router.delete('/redis/flush',[RedisController,'flush']).as('redis.flush')
 router.delete('/redis/:slug',[RedisController,'destroy']).as('redis.destroy')
 
+router
+  .group(() => {
+    router.get('/register', [RegisterController, 'show']).as('register.show')
+    router.post('/register', [RegisterController, 'store']).as('register.store')
+  })
+  .prefix('/auth')
+  .as('auth')
