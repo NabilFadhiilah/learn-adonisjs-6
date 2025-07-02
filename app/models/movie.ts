@@ -44,43 +44,42 @@ export default class Movie extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  @belongsTo(()=> MovieStatus,{
+  @belongsTo(() => MovieStatus, {
     foreignKey: 'statusId',
   })
   declare status: BelongsTo<typeof MovieStatus>
 
-  @belongsTo(()=> Cineast,{
+  @belongsTo(() => Cineast, {
     foreignKey: 'directorId',
   })
   declare director: BelongsTo<typeof Cineast>
 
-  @belongsTo(()=> Cineast,{
+  @belongsTo(() => Cineast, {
     foreignKey: 'writerId',
   })
   declare writer: BelongsTo<typeof Cineast>
 
-  @manyToMany(()=>Cineast,{
-    pivotTable:'crew_movies',
-    pivotTimestamps: true
-  })
-  declare crewMember: ManyToMany<typeof Cineast>
-
-  @manyToMany(()=>Cineast,{
-    pivotTable:'cast_movies',
+  @manyToMany(() => Cineast, {
+    pivotTable: 'crew_movies',
     pivotTimestamps: true,
-    pivotColumns:['character_name','sort_order']
+  })
+  declare crewMembers: ManyToMany<typeof Cineast>
+
+  @manyToMany(() => Cineast, {
+    pivotTable: 'cast_movies',
+    pivotTimestamps: true,
+    pivotColumns: ['character_name', 'sort_order'],
   })
   declare castMembers: ManyToMany<typeof Cineast>
 
   static released = scope((query) => {
-      query.where((group) =>
-        group
-          .where('statusId', MovieStatuses.RELEASED)
-          .whereNotNull('releasedAt')
-          .where('releasedAt', '<=', DateTime.now().toSQL())
-      )
-    }
-  )
+    query.where((group) =>
+      group
+        .where('statusId', MovieStatuses.RELEASED)
+        .whereNotNull('releasedAt')
+        .where('releasedAt', '<=', DateTime.now().toSQL())
+    )
+  })
 
   static notReleased = scope((query) => {
     query.where((group) =>
@@ -88,47 +87,46 @@ export default class Movie extends BaseModel {
         .whereNot('statusId', MovieStatuses.RELEASED)
         .orWhereNull('releasedAt')
         .orWhere('releasedAt', '>', DateTime.now().toSQL())
-      )
-    }
-  )
+    )
+  })
 
   @beforeCreate()
-  static async slugify(movie: Movie){
+  static async slugify(movie: Movie) {
     if (movie.slug) return
 
     const slug = string.slug(movie.title, {
       replacement: '-',
       lower: true,
-      strict: true
+      strict: true,
     })
 
     const rows = await Movie.query()
       .select('slug')
       .whereRaw('lower(??) = ?', ['slug', slug])
-      // .orWhere('lower(??) like ?', ['slug', `${slug}-%`])
-      .orWhereRaw('lower(??) like ?', ['slug', `slug-%`])
+      .orWhereRaw('lower(??) like ?', ['slug', `${slug}-%`])
 
-    if(!rows.length){
+    if (!rows.length) {
       movie.slug = slug
       return
     }
 
-    const incrementors = rows.reduce<number[]>((result, row)=>{
+    const incrementors = rows.reduce<number[]>((result, row) => {
       const tokens = row.slug.toLowerCase().split(`${slug}-`)
-      if (tokens.length > 2) {
+
+      if (tokens.length < 2) {
         return result
       }
 
       const increment = Number(tokens.at(1))
 
-      if (!Number.isNaN(increment)){
+      if (!Number.isNaN(increment)) {
         result.push(increment)
       }
 
       return result
-    },[])
+    }, [])
 
-    const increment = incrementors.length ? Math.max(...incrementors)+1:1
+    const increment = incrementors.length ? Math.max(...incrementors) + 1 : 1
 
     movie.slug = `${slug}-${increment}`
   }
