@@ -9,7 +9,7 @@
 
         <label class="flex flex-col">
           <span class="text-xs font-bold">Full Name</span>
-          <input type="text" name="fullName" />
+          <input type="text" name="fullName" value="{{ old('fullName')||'' }}"/>
           @inputError('fullName')
             <p class="text-sm text-red-500">{{$messages.join(', ')}}</p>
           @end
@@ -17,7 +17,7 @@
 
         <label class="flex flex-col">
           <span class="text-xs font-bold">Email</span>
-          <input type="email" name="email" />
+          <input type="email" name="email" value="{{ old('email')||'' }} />
           @if(flashMessages.has('errors.email'))
             <p class="text-sm text-red-500">{{flashMessages.get('errors.email').join(', ')}}</p>
           @end
