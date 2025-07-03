@@ -43,3 +43,15 @@ router
   })
   .prefix('/auth')
   .as('auth')
+
+router
+  .group(()=>{
+    router
+      .get('/', async(ctx)=>{
+        return `You are here as ${ctx.auth.user?.fullName} as ${ctx.auth.user?.roleId} role`
+      })
+    .as('index')
+  })
+.prefix('/admin')
+.as('admin')
+.middleware(middleware.admin())
