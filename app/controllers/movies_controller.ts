@@ -2,7 +2,7 @@ import Movie from '#models/movie'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class MoviesController {
-  async index({ view }: HttpContext) {
+  async index({ view, auth}: HttpContext) {
     const comingSoon = await Movie.query()
       .apply(scope => scope.notReleased())
       .preload('director')

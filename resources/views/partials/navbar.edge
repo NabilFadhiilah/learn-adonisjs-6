@@ -6,7 +6,11 @@
   </div>
 
   <div>
+    @if(await auth.check())
+      {{auth.user.fullName}}
+    @else
     <a href="{{ route('auth.login.show')}}">Login</a>
     <a href="{{ route('auth.register.show')}}">Register</a>
+    @end
   </div>
 </nav>
