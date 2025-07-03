@@ -1,4 +1,7 @@
 import Movie from "#models/movie";
+import { movieFilterValidator } from "#validators/movie";
+import { Infer } from "@vinejs/vine/types";
+
 type MovieSortoption = {
   id: string,
   text: string,
@@ -40,16 +43,15 @@ export class MovieService {
     },
 
   ]
-  static getFiltered(filters:Record<string,any>){
+  static getFiltered(filters:Infer<typeof movieFilterValidator>){
     const sort = this.sortOptions.find((option)=>option.id === filters.sort)||this.sortOptions[0]
 
     return Movie.query()
       .if(filters.search, (query) => query.whereILike('title', `%${filters.search}%`))
-      .if(filters.status, (query)=>query.where('statusId',filters.status))
+      .if(filters.status, (query)=>query.where('statusId',filters.status!))
       .if(['writer_asc', 'writer_desc'].includes(sort.id), (query) => {
         query.join('cineasts', 'cineasts.id', 'writer_id').select('movies.*')
       })
-      .join('cineasts','cineasts.id','writer_id')
       .preload('director')
       .preload('writer')
       .preload('status')
