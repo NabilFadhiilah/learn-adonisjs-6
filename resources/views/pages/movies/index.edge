@@ -39,4 +39,21 @@
     </div>
     @end
   </div>
+
+  <div class="flex items-center gap-2">
+    @each(item in pagination)
+    <a 
+      {{
+        html.attrs({
+          href: item.url,
+          class: [
+            'w-8 h-8 flex items-center justify-center border border-slate-200 rounded',
+            { 'bg-slate-100 border-indigo-500': item.isActive }
+          ]
+        })
+      }}>
+      {{ item.page }}
+    </a>
+    @end
+  </div>
 @end
