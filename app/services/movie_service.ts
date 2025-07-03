@@ -2,7 +2,7 @@ import Movie from "#models/movie";
 type MovieSortoption = {
   id: string,
   text: string,
-  field: keyof Movie,
+  field: string,
   dir: 'asc'|'desc'|undefined
 }
 
@@ -27,6 +27,16 @@ export class MovieService {
       text: 'Release Date (desc)',
       field: 'releasedAt',
       dir: 'desc'
+    },{
+      id: 'writer_asc',
+      text: 'Writer Name (asc)',
+      field: 'cineasts.last_name',
+      dir: 'asc'
+    },{
+      id: 'writer_desc',
+      text: 'Writer Name (desc)',
+      field: 'cineasts.last_name',
+      dir: 'desc'
     },
 
   ]
@@ -36,10 +46,15 @@ export class MovieService {
     return Movie.query()
       .if(filters.search, (query) => query.whereILike('title', `%${filters.search}%`))
       .if(filters.status, (query)=>query.where('statusId',filters.status))
+      .if(['writer_asc', 'writer_desc'].includes(sort.id), (query) => {
+        query.join('cineasts', 'cineasts.id', 'writer_id').select('movies.*')
+      })
+      .join('cineasts','cineasts.id','writer_id')
       .preload('director')
       .preload('writer')
       .preload('status')
       .orderBy(sort.field, sort.dir)
+      .select('movies.*')
       .limit(15)
   }
 }
