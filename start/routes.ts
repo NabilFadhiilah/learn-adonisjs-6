@@ -16,9 +16,12 @@ import RegisterController from '#controllers/auth/register_controller';
 import LoginController from '#controllers/auth/login_controller';
 import LogoutController from '#controllers/auth/logout_controller';
 import { middleware } from './kernel.js';
+import HomeController from '#controllers/home_controller';
 
 
-router.get('/', [MoviesController,'index']).as('home')
+router.get('/', [HomeController,'index']).as('home')
+
+router.get('/movies',[MoviesController,'index']).as('movies.index')
 router
   .get('/movies/:slug', [MoviesController,'show'])
   .as('movies.show')
