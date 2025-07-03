@@ -14,6 +14,8 @@ import DirectorsController from '#controllers/directors_controller';
 import WritersController from '#controllers/writers_controller';
 import RegisterController from '#controllers/auth/register_controller';
 import LoginController from '#controllers/auth/login_controller';
+import LogoutController from '#controllers/auth/logout_controller';
+import { middleware } from './kernel.js';
 
 
 router.get('/', [MoviesController,'index']).as('home')
@@ -33,10 +35,11 @@ router.delete('/redis/:slug',[RedisController,'destroy']).as('redis.destroy')
 
 router
   .group(() => {
-    router.get('/register', [RegisterController, 'show']).as('register.show')
-    router.post('/register', [RegisterController, 'store']).as('register.store')
-    router.get('/login', [LoginController, 'show']).as('login.show')
-    router.post('/login', [LoginController, 'store']).as('login.store')
+    router.get('/register', [RegisterController, 'show']).as('register.show').use(middleware.guest())
+    router.post('/register', [RegisterController, 'store']).as('register.store').use(middleware.guest())
+    router.get('/login', [LoginController, 'show']).as('login.show').use(middleware.guest())
+    router.post('/login', [LoginController, 'store']).as('login.store').use(middleware.guest())
+    router.post('/logout',[LogoutController,'handle']).as('logout').use(middleware.auth())
   })
   .prefix('/auth')
   .as('auth')
