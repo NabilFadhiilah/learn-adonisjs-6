@@ -7,6 +7,12 @@
       <form method="POST" action="{{ route('auth.login.store') }}" class="flex flex-col gap-4">
         {{ csrfField() }}
 
+        @error('E_INVALID_CREDENTIALS')
+          <p role="alert" class="text-sm text-red-500 bg-red-50 p-3 rounded">
+            {{$message}}
+          </p>
+        @end
+
         @!form.input({
           label: 'Email',
           name: 'email',
