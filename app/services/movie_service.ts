@@ -1,35 +1,45 @@
-import app from "@adonisjs/core/services/app"
-import { readdir, readFile } from 'node:fs/promises'
-import { MarkdownFile } from "@dimerapp/markdown"
-import { Exception } from "@adonisjs/core/exceptions"
+import Movie from "#models/movie";
+type MovieSortoption = {
+  id: string,
+  text: string,
+  field: keyof Movie,
+  dir: 'asc'|'desc'|undefined
+}
 
 export class MovieService {
-  static getSlugUrl(slug: String){
-    if (!slug.endsWith('.md')) {
-      slug += '.md'
-    }
-    return app.makeURL(`resources/movies/${slug}`)
-  }
+  static sortOptions:MovieSortoption[]=[{
+      id:'title_asc',
+      text: 'Title (asc)',
+      field: 'title',
+      dir:'asc'
+    },{
+      id:'title_desc',
+      text: 'Title (desc)',
+      field: 'title',
+      dir:'desc'
+    },{
+      id: 'releasedAt_asc',
+      text: 'Release Date (asc)',
+      field: 'releasedAt',
+      dir: 'asc'
+    },{
+      id: 'releasedAt_desc',
+      text: 'Release Date (desc)',
+      field: 'releasedAt',
+      dir: 'desc'
+    },
 
-  static async getSlugs() {
-    const files = await readdir(app.makeURL('resources/movies'))
-    return files.map((file) => file.replace('.md', ''))
-  }
+  ]
+  static getFiltered(filters:Record<string,any>){
+    const sort = this.sortOptions.find((option)=>option.id === filters.sort)||this.sortOptions[0]
 
-  static async read(slug: string) {
-    try {
-      const url = this.getSlugUrl(slug)
-      const file = await readFile(url, 'utf8')
-      const md = new MarkdownFile(file)
-
-      await md.process()
-
-      return md
-    } catch (error) {
-      throw new Exception(`Could not find a movie called ${slug}`, {
-        code: 'E_NOT_FOUND',
-        status: 404,
-      })
-    }
+    return Movie.query()
+      .if(filters.search, (query) => query.whereILike('title', `%${filters.search}%`))
+      .if(filters.status, (query)=>query.where('statusId',filters.status))
+      .preload('director')
+      .preload('writer')
+      .preload('status')
+      .orderBy(sort.field, sort.dir)
+      .limit(15)
   }
 }
