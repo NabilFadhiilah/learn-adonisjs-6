@@ -1,12 +1,23 @@
 @card({...$props.except(['movie'])})
 
-  @slot('picture') 
+  @slot('picture')
     <div class="relative">
       <img src="{{ movie.posterUrl }}" class="w-full h-auto" />
     </div>
   @end
 
   <h3 class="font-bold leading-none tracking-tight">{{movie.title}}</h3>
+
+  @if(showStatus)
+  <dl class="text-xs py-4">
+    <div class="flex">
+      <dt class="w-16">Status:</dt>
+      <dd>
+        {{movie.status.name}}
+      </dd>
+    </div>
+  </dl>
+  @end
 
   @if(showDirectorWritter)
   <dl class="text-xs py-4">

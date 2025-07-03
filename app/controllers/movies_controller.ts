@@ -1,4 +1,5 @@
 import Movie from '#models/movie'
+import MovieStatus from '#models/movie_statues'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class MoviesController {
@@ -7,12 +8,20 @@ export default class MoviesController {
 
     const movies = await Movie.query()
       .if(qs.search, (query) => query.whereILike('title', `%${qs.search}%`))
+      .if(qs.status, (query)=>query.where('statusId',qs.status))
       .preload('director')
       .preload('writer')
+      .preload('status')
       .orderBy('title','asc')
       .limit(15)
 
-    return view.render('pages/movies/index', { movies, filters: qs })
+      const movieStatuses = await MovieStatus.query().orderBy('name').select('id','name')
+
+    return view.render('pages/movies/index', {
+      movies,
+      movieStatuses,
+      filters: qs,
+    })
   }
 
   async show({ view, params }: HttpContext) {
