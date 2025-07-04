@@ -5,7 +5,6 @@ export const movieFilterValidator = vine.compile(
   vine.object({
     search: vine
       .string()
-      .alphaNumeric()
       .optional(),
 
     status: vine

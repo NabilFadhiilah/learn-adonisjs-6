@@ -44,7 +44,10 @@ export class MovieService {
     },
 
   ]
-  static getFiltered(page: number = 1, filters:Infer<typeof movieFilterValidator>, user:User | undefined = undefined){
+  static getFiltered(
+    filters:Infer<typeof movieFilterValidator>,
+    user:User | undefined = undefined
+  ){
     const sort = this.sortOptions.find((option)=>option.id === filters.sort)||this.sortOptions[0]
 
     return Movie.query()
@@ -62,6 +65,5 @@ export class MovieService {
       .preload('status')
       .orderBy(sort.field, sort.dir)
       .select('movies.*')
-      .paginate(page,15)
   }
 }
