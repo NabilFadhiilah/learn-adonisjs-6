@@ -17,6 +17,7 @@ import LoginController from '#controllers/auth/login_controller';
 import LogoutController from '#controllers/auth/logout_controller';
 import { middleware } from './kernel.js';
 import HomeController from '#controllers/home_controller';
+import WatchlistsController from '#controllers/watchlists_controller';
 
 
 router.get('/', [HomeController,'index']).as('home')
@@ -26,6 +27,8 @@ router
   .get('/movies/:slug', [MoviesController,'show'])
   .as('movies.show')
   .where('slug',router.matchers.slug( ))
+
+router.post('/watchlist/:movieId/toggle',[WatchlistsController,'toggle']).as('watchlists.toggle')
 
 router.get('/directors',[DirectorsController,'index']).as('directors.index')
 router.get('/directors/:id', [DirectorsController, 'show']).as('directors.show')
