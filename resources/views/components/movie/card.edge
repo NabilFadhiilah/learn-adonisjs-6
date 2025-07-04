@@ -39,7 +39,9 @@
   @end
 
   <div class="flex gap-2 items-center mt-2">
-    @if(auth.user && movie.watchlist)
+    @if ($slots.action)
+      {{{ await $slots.action() }}}
+    @elseif(auth.user && movie.watchlist)
       <form method="post" action="{{route('watchlists.toggle',{movieId:movie.id})}}" class="h-full">
         {{ csrfField() }}
         <button type="submit" class="h-10 w-10 flex items-center justify-center rounded bg-slate-100 hover:bg-slate-200 transition">
