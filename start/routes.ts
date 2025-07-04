@@ -28,7 +28,7 @@ router
   .as('movies.show')
   .where('slug',router.matchers.slug( ))
 
-  router
+router
   .group(() => {
     router.get('/watchlist', [WatchlistsController, 'index']).as('index')
     router.post('/watchlists/:movieId/toggle', [WatchlistsController, 'toggle']).as('toggle')
@@ -36,8 +36,8 @@ router
       .post('/watchlists/:movieId/toggle-watched', [WatchlistsController, 'toggleWatched'])
       .as('toggle.watched')
   })
-  .as('watchlists')
-  .use(middleware.auth())
+.as('watchlists')
+.use(middleware.auth())
 
 router.get('/directors',[DirectorsController,'index']).as('directors.index')
 router.get('/directors/:id', [DirectorsController, 'show']).as('directors.show')
@@ -56,8 +56,8 @@ router
     router.post('/login', [LoginController, 'store']).as('login.store').use(middleware.guest())
     router.post('/logout',[LogoutController,'handle']).as('logout').use(middleware.auth())
   })
-  .prefix('/auth')
-  .as('auth')
+.prefix('/auth')
+.as('auth')
 
 router
   .group(()=>{

@@ -6,7 +6,7 @@
     </div>
   @end
 
-  <h3 class="font-bold leading-none tracking-tight">{{movie.title}}</h3>
+  <h3 class="font-bold leading-none tracking-tight">{{ truncate(movie.title,20)}}</h3>
 
   @if(showStatus)
   <dl class="text-xs py-4">
