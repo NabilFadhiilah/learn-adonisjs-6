@@ -1,4 +1,6 @@
+import Cineast from "#models/cineast";
 import Movie from "#models/movie";
+import MovieStatus from "#models/movie_statues";
 import User from "#models/user";
 import { movieFilterValidator } from "#validators/movie_filter";
 
@@ -66,5 +68,11 @@ export class MovieService {
       .preload('status')
       .orderBy(sort.field, sort.dir)
       .select('movies.*')
+  }
+
+  static async getFormData(){
+      const statuses = await MovieStatus.query().orderBy('name')
+      const cineasts = await Cineast.query().orderBy('lastName')
+      return {statuses,cineasts}
   }
 }
