@@ -4,7 +4,9 @@ import ProfileService from "#services/profile_service";
 import { profileUpdateValidator } from "#validators/profile";
 import { inject } from "@adonisjs/core";
 import { HttpContext } from "@adonisjs/core/http";
+import app from "@adonisjs/core/services/app";
 import db from "@adonisjs/lucid/services/db";
+import { unlink } from "node:fs/promises";
 
 @inject()
 export default class ProfilesController {
@@ -16,13 +18,20 @@ export default class ProfilesController {
   }
 
   async update ({request,response, session, auth}:HttpContext){
-    const {fullName,description} = await request.validateUsing(profileUpdateValidator)
+    const {fullName,description,avatar,avatarUrl} = await request.validateUsing(profileUpdateValidator)
     const trx = await db.transaction()
 
     auth.user!.useTransaction(trx)
 
     try {
       const profile = await this.profileService.find()
+      if(avatar){
+        await avatar.move(app.makePath('storage/avatars'))
+        auth.user!.avatarUrl = `/avatars/${avatar.fileName}`
+      }else if(!avatarUrl && auth.user?.avatarUrl){
+        await unlink(app.makePath('storage',auth.user?.avatarUrl))
+        auth.user!.avatarUrl = ''
+      }
       await auth.user!.merge({fullName}).save()
       await profile.merge({description}).save()
       await trx.commit()

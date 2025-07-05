@@ -19,9 +19,12 @@ import { middleware } from './kernel.js';
 import HomeController from '#controllers/home_controller';
 import WatchlistsController from '#controllers/watchlists_controller';
 import ProfilesController from '#controllers/profiles_controller';
+import AvatarsController from '#controllers/avatars_controller';
 
 
 router.get('/', [HomeController,'index']).as('home')
+
+router.get('/avatars/:filename',[AvatarsController,'show']).as('avatars.show')
 
 router.get('/movies',[MoviesController,'index']).as('movies.index')
 router
