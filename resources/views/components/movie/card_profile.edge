@@ -1,0 +1,54 @@
+@card({...$props.except(['movie'])})
+
+  @slot('picture')
+    <div class="relative">
+      <img src="{{ movie.posterUrl }}" class="w-[450px] h-[100px] object-cover" />
+    </div>
+  @end
+
+  <h3 class="font-bold leading-none tracking-tight">{{ truncate(movie.title,20)}}</h3>
+
+  @if(showStatus)
+  <dl class="text-xs py-4">
+    <div class="flex">
+      <dt class="w-16">Status:</dt>
+      <dd>
+        {{movie.status.name}}
+      </dd>
+    </div>
+  </dl>
+  @end
+
+  @if(showDirectorWritter)
+  <dl class="text-xs py-4">
+    <div class="flex">
+      <dt class="w-16">Writer:</dt>
+      <dd>
+        <a href="{{route('writers.show',{id: movie.writer.id})}}">{{movie.writer.fullName}}</a>
+      </dd>
+    </div>
+    <div class="flex">
+      <dt class="w-16">Director:</dt>
+      <dd>
+        <a href="{{route('directors.show',{id: movie.director.id})}}">{{movie.director.fullName}}</a>
+      </dd>
+    </div>
+  </dl>
+  @else
+  <p class="text-xs text-slate-400 py-4">{{movie.summary}}</p>
+  @end
+
+  <p class="text-slate-400 text-xs py-4">
+    Watched At: {{movie.watchlist.at(0).watchedAt.toFormat('MMM dd, yyyy HH:mm')}}
+  </p>
+
+  <div class="flex gap-2 items-center mt-2">
+    @if ($slots.action)
+      {{{ await $slots.action() }}}
+    @end
+
+    @button({ href:route('movies.show', {slug: movie.slug}), class:"h-10 px-4" })
+      View Movie
+    @end
+  </div>
+@end

@@ -1,5 +1,6 @@
 // import type { HttpContext } from '@adonisjs/core/http'
 
+import Movie from "#models/movie";
 import User from "#models/user";
 import ProfileService from "#services/profile_service";
 import { profileUpdateValidator } from "#validators/profile";
@@ -46,10 +47,20 @@ export default class ProfilesController {
 
   async show({view,params}:HttpContext){
     const user = await User.findOrFail(params.id)
+    const movies = await Movie.query()
+      .whereHas('watchlist',(query)=>query
+        .where('userId',user.id)
+        .whereNotNull('watched_at'))
+      .preload('watchlist',(query)=>query
+        .where('userId',user.id))
+      .join('watchlists','watchlists.movie_id','movies.id')
+      .where('watchlists.user_id',user.id)
+      .orderBy('watchlists.watched_at','desc')
+      .select('movies.*')
 
     await user.load('profile')
 
-    return view.render('pages/profile/show',{user})
+    return view.render('pages/profile/show',{user,movies})
   }
 
   async at({ view, params }: HttpContext) {
