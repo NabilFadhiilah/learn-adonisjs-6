@@ -1,6 +1,7 @@
 import Movie from "#models/movie";
 import User from "#models/user";
-import { movieFilterValidator } from "#validators/movie";
+import { movieFilterValidator } from "#validators/movie_filter";
+
 import { Infer } from "@vinejs/vine/types";
 
 type MovieSortoption = {
