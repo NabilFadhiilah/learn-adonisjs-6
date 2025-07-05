@@ -108,5 +108,11 @@ export default class MoviesController {
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ response, params }: HttpContext) {
+    const movie = await Movie.findOrFail(params.id)
+
+    await movie.delete()
+
+    return response.redirect().back()
+  }
 }
