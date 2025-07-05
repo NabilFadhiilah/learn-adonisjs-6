@@ -20,6 +20,7 @@ import HomeController from '#controllers/home_controller';
 import WatchlistsController from '#controllers/watchlists_controller';
 import ProfilesController from '#controllers/profiles_controller';
 import AvatarsController from '#controllers/avatars_controller';
+const AdminDashboardController = () => import('#controllers/admin/dashboard_controller')
 
 
 router.get('/', [HomeController,'index']).as('home')
@@ -69,11 +70,7 @@ router
 
 router
   .group(()=>{
-    router
-      .get('/', async(ctx)=>{
-        return `You are here as ${ctx.auth.user?.fullName} as ${ctx.auth.user?.roleId} role`
-      })
-    .as('index')
+    router.get('/', [AdminDashboardController, 'handle']).as('dashboard')
   })
 .prefix('/admin')
 .as('admin')
