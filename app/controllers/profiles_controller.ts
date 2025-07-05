@@ -1,5 +1,6 @@
 // import type { HttpContext } from '@adonisjs/core/http'
 
+import User from "#models/user";
 import ProfileService from "#services/profile_service";
 import { profileUpdateValidator } from "#validators/profile";
 import { inject } from "@adonisjs/core";
@@ -41,5 +42,22 @@ export default class ProfilesController {
     }
 
     return response.redirect().back()
+  }
+
+  async show({view,params}:HttpContext){
+    const user = await User.findOrFail(params.id)
+
+    await user.load('profile')
+
+    return view.render('pages/profile/show',{user})
+  }
+
+  async at({ view, params }: HttpContext) {
+    const id = params.username.replace('@', '')
+    const user = await User.findOrFail(id)
+
+    await user.load('profile')
+
+    return view.render('pages/profile/show', { user })
   }
 }

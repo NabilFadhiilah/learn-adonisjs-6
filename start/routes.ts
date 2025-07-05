@@ -24,6 +24,8 @@ import AvatarsController from '#controllers/avatars_controller';
 
 router.get('/', [HomeController,'index']).as('home')
 
+router.get('/:username', [ProfilesController, 'at']).where('username', /^@/)
+
 router.get('/avatars/:filename',[AvatarsController,'show']).as('avatars.show')
 
 router.get('/movies',[MoviesController,'index']).as('movies.index')
@@ -54,6 +56,7 @@ router.delete('/redis/:slug',[RedisController,'destroy']).as('redis.destroy')
 
 router.get('/profile/edit',[ProfilesController,'edit']).as('profile.edit').use(middleware.auth())
 router.put('/profiles',[ProfilesController,'update']).as('profile.update').use(middleware.auth())
+router.get('/profiles/:id',[ProfilesController,'show']).as('profile.show')
 
 router
   .group(() => {
