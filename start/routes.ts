@@ -18,6 +18,7 @@ import LogoutController from '#controllers/auth/logout_controller';
 import { middleware } from './kernel.js';
 import HomeController from '#controllers/home_controller';
 import WatchlistsController from '#controllers/watchlists_controller';
+import ProfilesController from '#controllers/profiles_controller';
 
 
 router.get('/', [HomeController,'index']).as('home')
@@ -47,6 +48,8 @@ router.get('/writers/:id', [WritersController, 'show']).as('writers.show')
 
 router.delete('/redis/flush',[RedisController,'flush']).as('redis.flush')
 router.delete('/redis/:slug',[RedisController,'destroy']).as('redis.destroy')
+
+router.get('/profile/edit',[ProfilesController,'edit']).as('profile.edit').use(middleware.auth())
 
 router
   .group(() => {
