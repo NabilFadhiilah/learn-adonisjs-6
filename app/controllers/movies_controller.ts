@@ -8,39 +8,19 @@ import router from '@adonisjs/core/services/router'
 export default class MoviesController {
   async index({ request, view, auth }: HttpContext) {
     const page = request.input('page',1)
-
     const filters = await movieFilterValidator.validate(request.qs())
-
     const movies = await MovieService.getFiltered(filters, auth.user).paginate(page,15)
-
     const movieStatuses = await MovieStatus.query().orderBy('name').select('id','name')
-
     const movieSortOptions = MovieService.sortOptions
-
 
     movies.baseUrl(router.makeUrl('movies.index'))
     movies.queryString(filters)
-
-    const rangeMin = movies.currentPage - 3
-
-    const rangeMax = movies.currentPage + 3
-
-    let pagination = movies
-      .getUrlsForRange(1,movies.lastPage)
-      .filter(item=>{
-        if( item.page === 1 || item.page === movies.lastPage){
-          return true
-        }
-        return item.page >= rangeMin && item.page <= rangeMax
-      })
-
 
     return view.render('pages/movies/index', {
       movies,
       movieStatuses,
       movieSortOptions,
       filters,
-      pagination,
     })
   }
 

@@ -9,6 +9,8 @@
 
 import router from '@adonisjs/core/services/router'
 import MoviesController from '#controllers/movies_controller';
+import AdminMoviesController from '#controllers/admin/movies_controller';
+import AdminDashboardController from '#controllers/admin/dashboard_controller';
 import RedisController from '#controllers/redis_controller';
 import DirectorsController from '#controllers/directors_controller';
 import WritersController from '#controllers/writers_controller';
@@ -20,7 +22,6 @@ import HomeController from '#controllers/home_controller';
 import WatchlistsController from '#controllers/watchlists_controller';
 import ProfilesController from '#controllers/profiles_controller';
 import AvatarsController from '#controllers/avatars_controller';
-const AdminDashboardController = () => import('#controllers/admin/dashboard_controller')
 
 
 router.get('/', [HomeController,'index']).as('home')
@@ -71,6 +72,7 @@ router
 router
   .group(()=>{
     router.get('/', [AdminDashboardController, 'handle']).as('dashboard')
+    router.get('/movies',[AdminMoviesController,'index']).as('movies.index')
   })
 .prefix('/admin')
 .as('admin')
