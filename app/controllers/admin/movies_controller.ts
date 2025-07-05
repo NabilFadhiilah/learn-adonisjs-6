@@ -39,13 +39,16 @@ export default class MoviesController {
    * Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
-    const {poster,...data} = await request.validateUsing(movieValidator)
+    const {poster, cast, crew, ...data} = await request.validateUsing(movieValidator)
 
     if(poster){
       data.posterUrl = await MovieService.storePoster(poster)
     }
 
-    await Movie.create(data)
+    await db.transaction(async (trx)=>{
+      const movie = await Movie.create(data,{client:trx})
+      await MovieService.snycCastAndCrew(movie,cast,crew)
+    })
 
     return response.redirect().toRoute('admin.movies.index')
   }
@@ -65,10 +68,17 @@ export default class MoviesController {
       .from('crew_movies')
       .where('movie_id', movie.id)
       .orderBy('sort_order')
+
+    const castMembers = await db
+      .from('cast_movies')
+      .where('movie_id', movie.id)
+      .orderBy('sort_order')
+
     return view.render('pages/admin/movies/createOrEdit',{
       ...data,
       movie,
       crewMembers,
+      castMembers,
     })
   }
 
@@ -76,7 +86,7 @@ export default class MoviesController {
    * Handle form submission for the edit action
    */
   async update({ params, request, response }: HttpContext) {
-    const {poster, crew,...data} = await request.validateUsing(movieValidator)
+    const {poster, crew, cast, ...data} = await request.validateUsing(movieValidator)
     const movie = await Movie.findOrFail(params.id)
 
     if(poster){
@@ -86,17 +96,11 @@ export default class MoviesController {
       data.posterUrl=''
     }
 
-    await movie.merge(data).save()
-
-    const crewMembers = crew?.reduce<Record<number, { title: string; sort_order: number }>>(
-      (acc, row, index) => {
-        acc[row.id] = { title: row.title, sort_order: index }
-        return acc
-      },
-      {}
-    )
-
-    await movie.related('crewMembers').sync(crewMembers ?? [])
+    await db.transaction(async (trx)=>{
+      movie.useTransaction(trx)
+      await movie.merge(data).save()
+      await MovieService.snycCastAndCrew(movie,cast,crew)
+    })
 
     return response.redirect().toRoute('admin.movies.index')
   }
