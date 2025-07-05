@@ -5,7 +5,7 @@ import { watchlistFilterValidator } from '#validators/movie'
 import type { HttpContext } from '@adonisjs/core/http'
 import router from '@adonisjs/core/services/router'
 import { DateTime } from 'luxon'
-import querystring from 'node:querystring'
+
 
 export default class WatchlistsController {
 
@@ -24,9 +24,9 @@ export default class WatchlistsController {
       .paginate(page, 15)
     const movieStatuses = await MovieStatus.query().orderBy('name').select('id', 'name')
     const movieSortOptions = MovieService.sortOptions
-    const qs = querystring.stringify(filters)
 
     movies.baseUrl(router.makeUrl('watchlists.index'))
+    movies.queryString(filters)
 
     const rangeMin = movies.currentPage - 3
     const rangeMax = movies.currentPage + 3
@@ -34,20 +34,12 @@ export default class WatchlistsController {
       return item.page >= rangeMin && item.page <= rangeMax
     })
 
-    if (qs) {
-      pagination = pagination.map((item) => {
-        item.url += `&${qs}`
-        return item
-      })
-    }
-
     return view.render('pages/watchlist', {
       movies,
       movieStatuses,
       movieSortOptions,
       filters,
       pagination,
-      qs,
     })
   }
 
